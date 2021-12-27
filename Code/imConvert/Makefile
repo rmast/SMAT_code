@@ -5,7 +5,7 @@ CUDAINC   = $(CUDAROOT)/include
 CCFLAGS   =  -Iinclude -O3  -std=c++11
 NVCC = $(CUDAROOT)/bin/nvcc
 INCLUDES = -I. -Iinclude -I../shared -I../shared/include -I../shared/FastAC -L$(CUDALIB) -I$(CUDAINC) -I../shared/SplineGenerate
-CPPFLAGS = -Wall -g -fPIC -std=c++14 -Wextra -pedantic -O3 -g -fopenmp
+CPPFLAGS = -Wall -g -fPIC -std=c++14 -Wextra -pedantic -O3 -g -fopenmp -DGTE_USE_LINUX
 CPPFLAGS += $(INCLUDES)
 CPPFLAGS += $(CCFLAGS)
 CUDAFLAGS = -lcuda -lcudart
