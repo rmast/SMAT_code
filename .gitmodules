@@ -1,0 +1,3 @@
+[submodule "Code/shared/GTE"]
+	path = Code/shared/GTE
+	url = https://github.com/zhouxs1023/GTE.git

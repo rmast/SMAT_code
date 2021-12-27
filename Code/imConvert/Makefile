@@ -18,23 +18,31 @@ OUTDIR = out/
 OUTFILE = skeletonify
 
 SOURCE = Image.cpp ImageEncoder.cpp ImageWriter.cpp main.cpp skeleton_cuda.cpp
-OBJ = $(OUTDIR)$(subst $(SPACE), $(OUTDIR),$(SOURCE:.cpp=.o))
+OBJ = $(OUTDIR)$(subst $(SPACE), $(OUTDIR),$(SOURCE:.cpp=.o)) 
 
-LFLAG=-L../shared/SplineGenerate/lib/configuration -lgtapplications -lgtgraphics -lgtmathematicsgpu -lX11 -lXext -lGL -lEGL -lpng -lpthread -lm 
+LFLAG=-L../shared/SplineGenerate/lib/Debug -lgtapplications -lgtgraphics -lgtmathematicsgpu -lX11 -lXext -lGL -lEGL -lpng -lpthread -lm 
 
-EXTERNAL = ../shared/bcl/libbcl.a ../shared/FastAC/arithmetic_codec.o  ../shared/CUDASkel2D/CUDASkel2D.a ../shared/configParser/lib/Config.a ../shared/SplineGenerate/BSplineCurveFitter/configuration/BSplineCurveFitterWindow3.o
+EXTERNAL = ../shared/bcl/libbcl.a ../shared/FastAC/arithmetic_codec.o  ../shared/CUDASkel2D/CUDASkel2D.a ../shared/configParser/lib/Config.a ../shared/SplineGenerate/BSplineCurveFitter/Debug/BSplineCurveFitterWindow3.o
 ABSOUT=$(MPATH:Makefile=)$(OUTDIR)
-.PHONY: all external out
+.PHONY: all out
 default:all
 
-all:external $(OBJ)
+all: $(OBJ) ../shared/FastAC/arithmetic_codec.o ../shared/SplineGenerate/BSplineCurveFitter/Debug/BSplineCurveFitterWindow3.o
 	$(CXX) $(CPPFLAGS) -o $(OUTFILE) $(OBJ) $(EXTERNAL) $(CUDAFLAGS) $(LFLAG)
 	
-external:
+../shared/SplineGenerate/BSplineCurveFitter/Debug/BSplineCurveFitterWindow3.o: ../shared/SplineGenerate/BSplineCurveFitter/BSplineCurveFitterWindow3.cpp
+	make -C ../shared/SplineGenerate/BSplineCurveFitter CFG=Debug APP=BSplineCurveFitter -f ../makesample.gte
+
+../shared/configParser/lib/Config.a:
 	make -C ../shared/configParser -f Makefile
+
+../shared/CUDASkel2D/CUDASkel2D.a:
 	make -C ../shared/CUDASkel2D -f Makefile skeleton
+
+../shared/bcl/libbcl.a:
 	make -C ../shared/bcl -f Makefile
-	make -C ../shared/SplineGenerate/BSplineCurveFitter CFG=configuration APP=BSplineCurveFitter -f ../makesample.gte
+
+../shared/FastAC/arithmetic_codec.o:
 	g++ -g ../shared/FastAC/arithmetic_codec.cpp -c -o ../shared/FastAC/arithmetic_codec.o
 
 library : all
@@ -47,7 +55,7 @@ $(OUTDIR)%.o : %.cpp
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 clean:
-	$(RM) *.o *.gch
+	$(RM) *.o *.gch ../shared/SplineGenerate/BSplineCurveFitter/Debug/BSplineCurveFitterWindow3.o
 	$(RM) ../shared/FastAC/arithmetic_codec.o
 	$(RM) -rf lib
 	$(RM) -rf out
